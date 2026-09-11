@@ -3,6 +3,9 @@ import type { MiddlewareHandler } from "hono";
 import { basicAuth } from "hono/basic-auth";
 import {
   addRound,
+  deleteAllData,
+  deleteRound,
+  deleteSession,
   getOrCreateSession,
   getRoundsForSession,
   getSessionById,
@@ -64,6 +67,35 @@ app.get("/admin/sessions/:id", async (c) => {
   const rounds = await getRoundsForSession(c.env.DB, id);
   const summary = summarize(session, rounds);
   return c.html(adminDetailPage(summary, rounds));
+});
+
+app.post("/admin/sessions/:id/delete", async (c) => {
+  const id = c.req.param("id");
+  const session = await getSessionById(c.env.DB, id);
+  if (!session) {
+    return c.notFound();
+  }
+  await deleteSession(c.env.DB, id);
+  return c.redirect("/admin");
+});
+
+app.post("/admin/sessions/:id/rounds/:roundId/delete", async (c) => {
+  const id = c.req.param("id");
+  const roundId = Number(c.req.param("roundId"));
+  if (!Number.isInteger(roundId)) {
+    return c.notFound();
+  }
+  const session = await getSessionById(c.env.DB, id);
+  if (!session) {
+    return c.notFound();
+  }
+  await deleteRound(c.env.DB, id, roundId);
+  return c.redirect(`/admin/sessions/${id}`);
+});
+
+app.post("/admin/delete-all", async (c) => {
+  await deleteAllData(c.env.DB);
+  return c.redirect("/admin");
 });
 
 // --- API ---

@@ -116,6 +116,21 @@ export async function addRound(
   return row;
 }
 
+export async function deleteRound(db: D1Database, sessionId: string, roundId: number): Promise<void> {
+  await db.prepare("DELETE FROM rounds WHERE id = ? AND session_id = ?").bind(roundId, sessionId).run();
+  await db.prepare("UPDATE sessions SET updated_at = ? WHERE id = ?").bind(Date.now(), sessionId).run();
+}
+
+export async function deleteSession(db: D1Database, sessionId: string): Promise<void> {
+  await db.prepare("DELETE FROM rounds WHERE session_id = ?").bind(sessionId).run();
+  await db.prepare("DELETE FROM sessions WHERE id = ?").bind(sessionId).run();
+}
+
+export async function deleteAllData(db: D1Database): Promise<void> {
+  await db.prepare("DELETE FROM rounds").run();
+  await db.prepare("DELETE FROM sessions").run();
+}
+
 interface SessionSummaryRow extends SessionRow {
   round_count: number;
   first_wins: number;

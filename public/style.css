@@ -150,9 +150,36 @@ h1 {
   padding: 0.9rem 2rem;
 }
 
+.btn-danger {
+  background: transparent;
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.btn-danger:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn-small {
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+}
+
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+.inline-form {
+  display: inline;
+  margin: 0;
+}
+
+.admin-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
 }
 
 form label {

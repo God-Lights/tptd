@@ -22,6 +22,13 @@ export function adminDetailPage(summary: SessionSummary, rounds: RoundRow[]): st
         <td>${r.beta}</td>
         <td>${winnerName}</td>
         <td>${formatDate(r.created_at)}</td>
+        <td>
+          <form class="inline-form" method="post"
+                action="/admin/sessions/${summary.session.id}/rounds/${r.id}/delete"
+                onsubmit="return confirm('${r.round_no}번 라운드 기록을 삭제할까요?')">
+            <button type="submit" class="btn btn-danger btn-small">삭제</button>
+          </form>
+        </td>
       </tr>`;
     })
     .join("");
@@ -29,7 +36,13 @@ export function adminDetailPage(summary: SessionSummary, rounds: RoundRow[]): st
   const body = `
     <section class="card">
       <p><a href="/admin">&larr; 목록으로</a></p>
-      <h1>${first} vs ${last}</h1>
+      <div class="game-header">
+        <h1>${first} vs ${last}</h1>
+        <form method="post" action="/admin/sessions/${summary.session.id}/delete"
+              onsubmit="return confirm('${first} vs ${last} 세션과 모든 라운드 기록을 삭제할까요?')">
+          <button type="submit" class="btn btn-danger">세션 삭제</button>
+        </form>
+      </div>
       <div class="scoreboard">
         <div class="score-box">
           <span class="score-label">${first}</span>
@@ -48,9 +61,9 @@ export function adminDetailPage(summary: SessionSummary, rounds: RoundRow[]): st
       <h2>라운드 기록</h2>
       <table class="round-table">
         <thead>
-          <tr><th>#</th><th>알파</th><th>B</th><th>베타</th><th>승자</th><th>시각</th></tr>
+          <tr><th>#</th><th>알파</th><th>B</th><th>베타</th><th>승자</th><th>시각</th><th></th></tr>
         </thead>
-        <tbody>${rows || '<tr><td colspan="6">아직 라운드 기록이 없습니다.</td></tr>'}</tbody>
+        <tbody>${rows || '<tr><td colspan="7">아직 라운드 기록이 없습니다.</td></tr>'}</tbody>
       </table>
     </section>
   `;
